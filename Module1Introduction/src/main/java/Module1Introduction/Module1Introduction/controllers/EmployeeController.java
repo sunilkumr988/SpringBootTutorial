@@ -1,9 +1,14 @@
 package Module1Introduction.Module1Introduction.controllers;
 
 import Module1Introduction.Module1Introduction.dto.EmployeeDto;
+import Module1Introduction.Module1Introduction.entities.EmployeeEntity;
+import Module1Introduction.Module1Introduction.repositories.EmployeeRepository;
+import Module1Introduction.Module1Introduction.services.EmployeeServices;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/employees")
 public class EmployeeController {
@@ -11,13 +16,22 @@ public class EmployeeController {
 //public String getmymessage(){
 //    return "hii i am sunil";
 //}
+    private final EmployeeServices employeeServices;
+
+    public EmployeeController(EmployeeServices employeeServices) {
+        this.employeeServices = employeeServices;
+    }
+
+
     @GetMapping(path = "/{employeeId}")
     public EmployeeDto getEmployeeById(@PathVariable (name="employeeId")long Id){
-        return new EmployeeDto(Id,"sunil",23, LocalDate.of(2022,12,2),true);
+       return employeeServices.getEmployeeById(Id);
     }
-    public String getMyData(@RequestParam (required = false)int age,
-                            @RequestParam (required = false) String sortby){
-        return "hii my age is :- "+ age + sortby;
+    @GetMapping
+    public List<EmployeeDto> getMyData(
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) String sortby){
+         return employeeServices.getMydata();
     }
 //    @PostMapping
 //    public String postData(){
@@ -29,8 +43,7 @@ public class EmployeeController {
     }
     @PostMapping
     public EmployeeDto createNewEmployee(@RequestBody EmployeeDto inputEmployee){
-        inputEmployee.setId(200L);
-        return inputEmployee;
+   return employeeServices.createNewEmployee(inputEmployee);
     }
 
 }
